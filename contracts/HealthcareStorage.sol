@@ -1,14 +1,14 @@
 pragma solidity ^0.4.23;
 
 // Storage contract
-contract HealthcareHandler {
+contract HealthcareStorage {
   struct User{
     uint8  age;
     string name;
     string history;
   }
 
-  mapping (address => User) userData;
+  mapping (address => User) public userData;
   address public contractFunctions;
   address public owner;
 
@@ -25,8 +25,8 @@ contract HealthcareHandler {
   }
 
 
-  function writeData(uint8 _age, string _name, string _history) public returns (bool) {
-    return contractFunctions.delegatecall(bytes4(keccak256("writeData(uint8,string,string,address)",_age,_name,_history,msg.sender)));
+  function writeData(uint8 _age, string _name, string _history) public {
+    contractFunctions.delegatecall(bytes4(keccak256("writeData(uint8,string,string,address)",_age,_name,_history,msg.sender)));
   }
 
   function readData(address _patient) public returns (string) {
