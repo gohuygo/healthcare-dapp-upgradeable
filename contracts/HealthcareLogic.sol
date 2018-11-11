@@ -10,9 +10,11 @@ contract HealthcareLogic {
     string history;
   }
 
-  function writeData(uint8 _age, string _name, string _history, address _sender) public returns (bool) {
-    User memory newData = User(_age, _name, _history);
-    userData[_sender] = newData;
+  mapping (address => User) public userData;
+
+  function writeData(uint8 _age, string _name, string _history) public returns (bool) {
+    User memory newData = User({age: _age, name: _name, history: _history});
+    userData[msg.sender] = newData;
 
     return true;
   }

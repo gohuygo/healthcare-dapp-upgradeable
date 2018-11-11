@@ -9,27 +9,27 @@ contract HealthcareStorage {
   }
 
   mapping (address => User) public userData;
-  address public contractFunctions;
+  address public logicContract;
   address public owner;
 
-  constructor(address _contractFunctions) public {
-    contractFunctions = _contractFunctions;
+  constructor(address _logicContract) public {
+    logicContract = _logicContract;
     owner = msg.sender;
   }
 
   function updateContract(address _newAddress) public returns (bool) {
     require(msg.sender == owner);
-    contractFunctions = _newAddress;
+    logicContract = _newAddress;
 
     return true;
   }
 
 
   function writeData(uint8 _age, string _name, string _history) public {
-    contractFunctions.delegatecall(bytes4(keccak256("writeData(uint8,string,string,address)",_age,_name,_history,msg.sender)));
+    logicContract.delegatecall(bytes4(keccak256("writeData(uint8,string,string)")), _age, _name, _history);
   }
 
-  function readData(address _patient) public returns (string) {
-    return contractFunctions.delegatecall(bytes4(keccak256("readData(address)",_patient)));
+  function readData(address _patient) public  {
+    logicContract.delegatecall(bytes4(keccak256("readData(address)")), _patient);
   }
 }
