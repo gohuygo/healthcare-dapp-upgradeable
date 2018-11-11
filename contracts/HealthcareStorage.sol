@@ -8,28 +8,17 @@ contract HealthcareStorage {
     string history;
   }
 
+  // TODO: Protect against other contracts trying to update
   mapping (address => User) public userData;
-  address public contractFunctions;
-  address public owner;
 
-  constructor(address _contractFunctions) public {
-    contractFunctions = _contractFunctions;
-    owner = msg.sender;
+  function writeUserData(uint8 _age, string _name, string _history) public {
+    User memory newData = User(_age, _name, _history);
+    userData[msg.sender] = newData;
   }
 
-  function updateContract(address _newAddress) public returns (bool) {
-    require(msg.sender == owner);
-    contractFunctions = _newAddress;
-
-    return true;
+  function readUserData(address _patient) public returns (string) {
+    User memory data =  userData[_patient];
+    return data.history;
   }
 
-
-  function writeData(uint8 _age, string _name, string _history) public {
-    contractFunctions.delegatecall(bytes4(keccak256("writeData(uint8,string,string,address)",_age,_name,_history,msg.sender)));
-  }
-
-  function readData(address _patient) public returns (string) {
-    return contractFunctions.delegatecall(bytes4(keccak256("readData(address)",_patient)));
-  }
 }
